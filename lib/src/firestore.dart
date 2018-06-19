@@ -17,6 +17,7 @@ export 'interop/firestore_interop.dart'
         SetOptions,
         Settings,
         SnapshotMetadata,
+        SnapshotOptions,
         Timestamps;
 
 /// The Cloud Firestore service interface.
