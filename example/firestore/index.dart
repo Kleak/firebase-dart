@@ -108,11 +108,17 @@ class MessagesApp {
         _uppercaseItem(docSnapshot);
       });
 
+    var timestamps = docSnapshot.get('created_at') as Timestamps;
+    var date = new DateTime.fromMillisecondsSinceEpoch(timestamps.toDate().getTime());
+    var aElementCreatedAt = new SpanElement()..text = date.toIso8601String();
+
     var element = new LIElement()
       ..id = "item-${docSnapshot.id}"
       ..append(spanElement)
+      ..append(aElementCreatedAt)
       ..append(aElementDelete)
       ..append(aElementUpdate);
+
     messages.append(element);
   }
 

@@ -7,7 +7,7 @@ import 'firestore.dart';
 import 'func.dart';
 
 import 'interop/firebase_interop.dart' show ThenableJsImpl, PromiseJsImpl;
-import 'interop/firestore_interop.dart' show FieldValue;
+import 'interop/firestore_interop.dart' show FieldValue, Timestamps;
 import 'interop/js_interop.dart' as js;
 
 /// Returns Dart representation from JS Object.
@@ -24,6 +24,13 @@ dynamic dartify(Object jsObject) {
   var jsDate = js.dartifyDate(jsObject);
   if (jsDate != null) {
     return jsDate;
+  }
+
+  if (util.hasProperty(jsObject, 'toDate')) {
+    var jsDate = js.dartifyDate((jsObject as Timestamps).toDate());
+    if (jsDate != null) {
+      return jsDate;
+    }
   }
 
   if (util.hasProperty(jsObject, 'firestore') &&

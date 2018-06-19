@@ -16,7 +16,8 @@ export 'interop/firestore_interop.dart'
         setLogLevel,
         SetOptions,
         Settings,
-        SnapshotMetadata;
+        SnapshotMetadata,
+        Timestamps;
 
 /// The Cloud Firestore service interface.
 ///
@@ -707,15 +708,17 @@ class DocumentSnapshot
   ///
   /// Returns non-null [Map] containing all fields in the specified
   /// document.
-  Map<String, dynamic> data() => dartify(jsObject.data());
+  Map<String, dynamic> data([firestore_interop.SnapshotOptions options]) =>
+      dartify(jsObject.data(options));
 
   /// Retrieves the field specified by [fieldPath] parameter at the specified
   /// field location or [:null:] if no such field exists in the document.
   ///
   /// The [fieldPath] is the String or [FieldPath] - the path
   /// (e.g. 'foo' or 'foo.bar') to a specific field.
-  dynamic get(/*String|FieldPath*/ fieldPath) =>
-      dartify(jsObject.get(fieldPath));
+  dynamic get(/*String|FieldPath*/ fieldPath,
+          [firestore_interop.SnapshotOptions options]) =>
+      dartify(jsObject.get(fieldPath, options));
 
   /// Returns `true` if this [DocumentSnapshot] is equal to the provided one.
   bool isEqual(DocumentSnapshot other) => jsObject.isEqual(other.jsObject);

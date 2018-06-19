@@ -5,6 +5,7 @@ library firebase.firestore_interop;
 
 import 'dart:typed_data' show Uint8List;
 
+import 'package:firebase/src/interop/js_interop.dart';
 import 'package:js/js.dart';
 
 import '../func.dart';
@@ -160,6 +161,19 @@ abstract class DocumentReferenceJsImpl {
   external PromiseJsImpl<Null> update(dataOrFieldsAndValues);
 }
 
+@JS("SnapshotOptions")
+class SnapshotOptions {
+  external String get serverTimestamps;
+  external set serverTimestamps(String v);
+
+  /// If set, controls the return value for server timestamps that have not yet been set to their final value.
+  /// By specifying 'estimate', pending server timestamps return an estimate based on the local clock.
+  /// This estimate will differ from the final value and cause these values to change once the server result becomes available.
+  /// By specifying 'previous', pending timestamps will be ignored and return their previous value instead.
+  /// If omitted or set to 'none', null will be returned by default until the server value becomes available.
+  external factory SnapshotOptions({String serverTimestamps});
+}
+
 @JS("DocumentSnapshot")
 abstract class DocumentSnapshotJsImpl {
   external bool get exists;
@@ -170,8 +184,9 @@ abstract class DocumentSnapshotJsImpl {
   external set metadata(SnapshotMetadata v);
   external DocumentReferenceJsImpl get ref;
   external set ref(DocumentReferenceJsImpl v);
-  external dynamic data();
-  external dynamic get(/*String|FieldPath*/ fieldPath);
+  external dynamic data([SnapshotOptions options]);
+  external dynamic get(/*String|FieldPath*/ fieldPath,
+      [SnapshotOptions options]);
 
   /// Returns [true] if this [DocumentSnapshotJsImpl] is equal to the provided one.
   external bool isEqual(DocumentSnapshotJsImpl other);
@@ -305,7 +320,18 @@ abstract class Settings {
   /// Whether to use SSL when connecting.
   external bool get ssl;
   external set ssl(bool v);
-  external factory Settings({String host, bool ssl});
+
+  /// Enables the use of [Timestamps] for timestamp fields in [DocumentSnapshots].
+  external bool get timestampsInSnapshots;
+  external set timestampsInSnapshots(bool v);
+  external factory Settings(
+      {String host, bool ssl, bool timestampsInSnapshots});
+}
+
+@anonymous
+@JS()
+abstract class Timestamps {
+  external JsDate toDate();
 }
 
 /// Metadata about a snapshot, describing the state of the snapshot.
